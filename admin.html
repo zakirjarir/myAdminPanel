@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Studio Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            background-color: #f1f1f1;
+            font-family: Arial, sans-serif;
+        }
+        .sidebar {
+            height: 100vh;
+            margin-top: 57px;
+            background-color: #212121;
+            color: #fff;
+            position: fixed;
+            width: 240px;
+            top: 0;
+            left: 0;
+            overflow-y: auto;
+            transition: all 0.3s;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 3px; 
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background-color: #e53935; 
+            border-radius: 5px; 
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background-color: #333; 
+            border-radius: 5px; 
+        }
+
+        .sidebar.hide-sidebar {
+            width: 60px;
+        }
+        .hide-sidebar .saidbae-component {
+            display: none;
+        }        
+        .hide-sidebar .brand {
+            display: none;
+        }
+
+        .sidebar .brand {
+            /* position: fixed; */
+            padding: 15px;
+            text-align: center;
+            background-color: #333;
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+        .sidebar a {
+            color: #bdbdbd;
+            text-decoration: none;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            font-size: 15px;
+        }
+        .sidebar a i {
+            margin-right: 15px;
+            min-width: 20px;
+            text-align: center;
+        }
+        .sidebar a:hover {
+            background-color: #424242;
+            color: #fff;
+        }
+        .sidebar a.active {
+            background-color: #e53935;
+            color: #fff;
+        }
+        .sidebar .dropdown {
+            padding: 0;
+        }
+        .sidebar .dropdown-menu {
+            background-color: #333;
+            border: 2px solid red;
+        }
+        .sidebar .dropdown-item {
+            color: #bdbdbd;
+            background-color: rgb(0, 0, 0);
+
+        }
+        .sidebar .dropdown-item:hover {
+            background-color: #424242;
+            color: #fff;
+        }
+        .theme-switch i {
+        font-size: 20px;
+        transition: all 0.3s ease;
+        float: left;
+    }
+        .navbar {
+            background-color: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            height: 60px;
+            padding: 0 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: fixed;
+            /* width: calc(100% - 240px); */
+            /* left: 240px; */
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s;
+        }
+        /* .navbar.hide-sidebar {
+            left: 60px;
+            width: calc(100% - 60px);
+        } */
+        .navbar .search-bar {
+            width: 400px;
+            border-radius: 20%;
+        }
+        .navbar .toggle-sidebar {
+            cursor: pointer;
+            font-size: 1.5rem;
+            margin-right: 20px;
+        }
+        .profile img{
+            height: 40px;
+            width: 40px;
+            border-radius: 100%;
+            object-fit: cover;
+            border: 1px solid black;
+        }
+        .content {
+            margin-top: 60px;
+            margin-left: 240px;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+        .content.hide-sidebar {
+            margin-left: 60px;
+        }
+        .card {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .dark-mode {
+            background-color: #121212;
+            color: #fff;
+        }
+        .dark-mode .navbar {
+            background-color: #1e1e1e;
+            border-bottom-color: #333;
+        }
+        .dark-mode .sidebar {
+            background-color: #1e1e1e;
+        }
+        .dark-mode .card {
+            background-color: #1e1e1e;
+            color: #fff;
+        }
+        .dropdown-toggle::after {
+            display: inline-block;
+            margin-left: .255em;
+            vertical-align: .255em;
+            border-top: .3em solid transparent;
+            border-right: .3em solid transparent;
+            border-bottom: .3em solid transparent;
+            border-left: .3em solid transparent;
+            transform: rotate(90deg); 
+            transition: all 0.3s ease;
+        }
+
+
+        .profilePop {
+            background-color: #121212;
+            list-style: none;
+            height: auto;
+            width: 200px;
+            position: absolute; 
+            top: 60px; 
+            right: 0; 
+            padding: 15px;
+            display: none;
+            z-index: 10; 
+        }
+
+        .profilePop a {
+            text-decoration: none;
+            display: block;
+            padding: 5px;
+            font-size: 15px;
+            color: #f1f1f1;
+            margin-bottom: 5px;
+            border-radius: 5px;
+        }
+
+        .profilePop a:hover {
+            background: #555; 
+        }
+        @media(max-width:760px){
+        .sidebar {
+            margin-top: 34px;
+            width: 120px;
+        }
+        .sidebar a {
+            padding: 10px 10px;
+            font-size: 10px;
+        }
+        .sidebar .brand {
+            padding: 10px;
+            font-size:15px;
+        }
+        .sidebar a i {
+            margin-right: 10px;
+            min-width: 10px;
+            text-align: center;
+        }
+        .sidebar.hide-sidebar {
+            width: 35px;
+        }
+        .sidebar::-webkit-scrollbar {
+            width: 1px; 
+        }
+
+        .navbar {
+            height: 35px;
+            padding: 0 15px;
+            width: 100%
+        }
+        .navbar .search-bar {
+            width: 120px;
+            float: left;
+        }
+        .navbar .search-bar input{
+            width: 120px;
+            height: 25px;
+            font-size: 10px;
+        }
+
+        .navbar .toggle-sidebar {
+            cursor: pointer;
+            font-size: 10px;
+            margin-right: 20px;
+        }
+        .profile img{
+            height: 20px;
+            width: 20px;
+            
+        }
+        .profilePop {
+            width:120px;
+            top: 36px; 
+            padding: 10px;
+        }
+
+        .profilePop a {
+            text-decoration: none;
+            display: block;
+            padding: 5px;
+            font-size: 10px;
+            color: #f1f1f1;
+            margin-bottom: 5px;
+            border-radius: 5px;
+        }
+        .content {
+            margin-top: 40px;
+            margin-left: 120px;
+            padding: 8px;
+        }
+        .content.hide-sidebar {
+            margin-left: 38px;
+        }
+        }
+
+
+        @media (max-width: 760px) {
+    .sidebar {
+        margin-top: 34px;
+        width: 40px; 
+        overflow: hidden;
+        transition: width 0.3s ease;
+    }
+    .saidbae-component{
+        display: none;
+    }
+
+    .sidebar.show-sidebar {
+        width: 120px; 
+    }
+    .show-sidebar .saidbae-component{
+        display: block;
+    }
+
+
+    .content {
+        margin-left: 45px; 
+    }
+    .content.show-sidebar {
+        margin-left: 120px; 
+    }
+}
+
+
+
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar sidebar2" id="sidebar">
+        <div class="brand saidbae-component">Zakir Jarir</div>
+        <a href="#" class="active"><i class="fas fa-home"></i> <span class="saidbae-component">Dashboard</span></a>
+        <div class="dropdown">
+            <a href="#" class="dropdown-toggle" data-bs-toggle="collapse" data-bs-target="#contentMenu" aria-expanded="false" aria-controls="contentMenu"><i class="fas fa-folder"></i> <span class="saidbae-component">Content <i class=" text-end fa fa-caret-right"></i>
+            </span> </a>
+            <div id="contentMenu" class="collapse">
+                <a href="#" class="dropdown-item">Videos</a>
+                <a href="#" class="dropdown-item">Playlists</a>
+            </div>
+        </div>
+        <div class="dropdown">
+            <a href="#" class="dropdown-toggle" data-bs-toggle="collapse" data-bs-target="#analyticsMenu" aria-expanded="false" aria-controls="analyticsMenu"><i class="fas fa-chart-bar"></i> <span class="saidbae-component">Analytics</span> <i class=" text-end fa fa-caret-right"></i></a>
+            <div id="analyticsMenu" class="collapse">
+                <a href="#" class="dropdown-item">Overview</a>
+                <a href="#" class="dropdown-item">Revenue</a>
+            </div>
+        </div>
+        <a href="#"><i class="fas fa-comments"></i> <span class="saidbae-component">Comments</span></a>
+        <a href="#"><i class="fas fa-closed-captioning"></i> <span class="saidbae-component">Subtitles</span></a>
+        <a href="#"><i class="fas fa-dollar-sign"></i>  <span class="saidbae-component">Monetization</span> </a>
+        <a href="#"><i class="fas fa-paint-brush"></i>  <span class="saidbae-component">Customization</span> </a>
+        <a href="#"><i class="fas fa-music"></i>  <span class="saidbae-component">Audio Library</span> </a>
+        <a href="#"><i class="fas fa-cog"></i>  <span class="saidbae-component">Settings</span> </a>
+        <a href="#"><i class="fas fa-comments"></i> <span class="saidbae-component">Comments</span></a>
+        <a href="#"><i class="fas fa-closed-captioning"></i> <span class="saidbae-component">Subtitles</span></a>
+        <a href="#"><i class="fas fa-dollar-sign"></i>  <span class="saidbae-component">Monetization</span> </a>
+        <a href="#"><i class="fas fa-paint-brush"></i>  <span class="saidbae-component">Customization</span> </a>
+    </div>
+
+    <!-- Navbar -->
+    <div class="navbar" id="navbar">
+        <div class="toggle-sidebar" id="toggleSidebar">☰</div>
+        <div class="search-bar">
+            <input type="text" class="form-control" placeholder="Search">
+        </div>
+        <div class="theme-switch" style="display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-moon" id="themeIcon" style="cursor: pointer;"></i>
+        </div>
+        <div class="profile">
+            <img onclick="setting()" src="https://static.vecteezy.com/system/resources/thumbnails/001/840/612/small_2x/picture-profile-icon-male-icon-human-or-people-sign-and-symbol-free-vector.jpg" alt="Profile" class="rounded-circle">
+        </div>
+    </div>
+    <div>
+        <div id="profilePop" class="profilePop">
+            <a href="#"><i class="fas fa-comments pe-2"></i> <span class="navbar-component">Comments</span></a>
+            <a href="#"><i class="fas fa-closed-captioning  pe-2"></i> <span class="navbar-component">Subtitles</span></a>
+            <a href="#"><i class="fas fa-dollar-sign  pe-2"></i>  <span class="navbar-component">Monetization</span> </a>
+            <a href="#"><i class="fas fa-paint-brush  pe-2"></i>  <span class="navbar-component">Customization</span> </a>
+            <a href="#"><i class="fas fa-music  pe-2"></i>  <span class="navbar-component">Audio Library</span> </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content" id="content">
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">Subscribers</h5>
+                        <p class="card-text fs-2">1,245</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">Views</h5>
+                        <p class="card-text fs-2">54,321</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">Earnings</h5>
+                        <p class="card-text fs-2">$1,230</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">Recent Videos</div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Video Title 1</li>
+                        <li class="list-group-item">Video Title 2</li>
+                        <li class="list-group-item">Video Title 3</li>
+                        <li class="list-group-item">Video Title 4</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">Channel Performance</div>
+                    <div class="card-body">
+                        <canvas id="performanceChart" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('performanceChart').getContext('2d');
+        const performanceChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+                datasets: [{
+                    label: 'Views',
+                    data: [1200, 1900, 3000, 5000, 7000],
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true
+            }
+        });
+
+        const themeIcon = document.getElementById("themeIcon");
+
+        themeIcon.addEventListener("click", () => {
+            if (document.body.classList.contains("dark-mode")) {
+                document.body.classList.remove("dark-mode");
+                themeIcon.className = "fas fa-moon"; // Moon icon
+            } else {
+                document.body.classList.add("dark-mode");
+                themeIcon.className = "fas fa-sun"; // Sun icon
+            }
+        });
+                
+        const toggleSidebar = document.getElementById('toggleSidebar');
+        const sidebar = document.getElementById('sidebar');
+        const navbar = document.getElementById('navbar');
+        const content = document.getElementById('content');
+
+        toggleSidebar.addEventListener('click', () => {
+            sidebar.classList.toggle('hide-sidebar');
+            navbar.classList.toggle('hide-sidebar');
+            content.classList.toggle('hide-sidebar');
+        });
+
+
+        toggleSidebar.addEventListener('click', () => {
+            sidebar.classList.toggle('show-sidebar'); // Sidebar expands
+            content.classList.toggle('show-sidebar'); // Content adjusts accordingly
+        });
+
+
+
+        function setting() {
+        const set = document.getElementById('profilePop');
+        if (set.style.display === 'block') {
+            set.style.display = 'none';
+        } else {
+            set.style.display = 'block';
+
+            document.addEventListener('click', function handleClickOutside(event) {
+                if (!set.contains(event.target) && event.target.tagName !== 'IMG') {
+                    set.style.display = 'none';
+                
+                    document.removeEventListener('click', handleClickOutside);
+                }
+            });
+        }
+
+        
+    }  
+        const sidebarLinks = sidebar.querySelectorAll('a');
+
+        sidebarLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (sidebar.classList.contains('hide-sidebar')) {
+                    sidebar.classList.remove('hide-sidebar');
+                    content.classList.remove('hide-sidebar');
+                }
+            });
+        });
+        
+        
+        const sidebarLinks2 = sidebar.querySelectorAll('a');
+
+        // Loop over all the sidebar links
+        sidebarLinks2.forEach(link => {
+            link.addEventListener('click', () => {
+                // Remove 'active' class from all links
+                sidebarLinks2.forEach(item => item.classList.remove('active'));
+                
+                // Add 'active' class to clicked link
+                link.classList.add('active');
+            });
+        });
+
+
+
+    </script>
+</body>
+</html>
